@@ -60,7 +60,7 @@ Create `.env.dev`, `.env.staging`, `.env.prod` (gitignored). Run with:
 | Page | `src/pages/<name>.page.ts` extending `BasePage` | `src/fixtures/pages.fixture.ts` |
 | API service | `src/api/<name>.api.ts` extending `BaseClient` | `src/fixtures/api.fixture.ts` |
 | DB helpers | `src/db/<entity>.db.ts` | called from a data fixture |
-| Seeded entity | new fixture in `src/fixtures/data.fixture.ts` | typed in `AllFixtures` |
+| Seeded entity | new fixture in `src/fixtures/data.fixture.ts` | add field to `DataFixtures` type and to the assignment in `src/fixtures/index.ts` |
 | User role | new `setup(...)` in `tests/auth.setup.ts` | `storageStatePath('<role>')` in config |
 | Environment | `.env.<name>` + add to `EnvSchema` enum | new `npm run test:<name>` script |
 

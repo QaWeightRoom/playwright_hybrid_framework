@@ -1,5 +1,6 @@
 import { test, expect } from '@/fixtures';
 import { env } from '@/config/env';
+import { usersDb } from '@/db/users.db';
 
 test.describe('Login flow', () => {
   // The default storageState ('standard') means the user is already logged in
@@ -25,7 +26,8 @@ test.describe('DB-backed seeding (sample)', () => {
 
   test('seededUser fixture creates and cleans up a row', async ({ seededUser, db }) => {
     expect(seededUser.id).toBeGreaterThan(0);
-    const found = await db.query('SELECT id FROM users WHERE id = $1', [seededUser.id]);
-    expect(found.rowCount).toBe(1);
+    const found = await usersDb.findById(db, seededUser.id);
+    expect(found).not.toBeNull();
+    expect(found?.email).toBe(seededUser.email);
   });
 });

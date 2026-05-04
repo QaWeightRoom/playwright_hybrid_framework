@@ -41,4 +41,13 @@ export const usersDb = {
     const row = result.rows[0];
     return row ? { id: row.id, email: row.email, createdAt: row.created_at } : null;
   },
+
+  async findById(pool: Pool, id: number): Promise<SeededUser | null> {
+    const result = await pool.query<{ id: number; email: string; created_at: Date }>(
+      'SELECT id, email, created_at FROM users WHERE id = $1',
+      [id],
+    );
+    const row = result.rows[0];
+    return row ? { id: row.id, email: row.email, createdAt: row.created_at } : null;
+  },
 };
