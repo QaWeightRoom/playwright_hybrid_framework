@@ -15,11 +15,11 @@
     "allowImportingTsExtensions": false,
     "declaration": false,
     "noEmit": true,
-    // TypeScript 6.0 deprecates `baseUrl` (still functional). We keep `baseUrl` + `paths`
+    // TypeScript 5.0 deprecated `baseUrl` (still functional). We keep `baseUrl` + `paths`
     // for the `@/*` alias used throughout the framework. When ready to migrate, replace
     // both with a `package.json` "imports" map (e.g. "#/*": "./src/*") — Node-native, no
     // tsconfig path resolution needed — and rewrite `@/...` imports to `#/...`.
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
