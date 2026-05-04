@@ -5,8 +5,8 @@ import { APP_ENVS } from '@/config/types';
 
 const TEST_ENV = (process.env.TEST_ENV ?? 'local') as string;
 
-loadDotenv({ path: path.resolve(process.cwd(), '.env') });
-loadDotenv({ path: path.resolve(process.cwd(), `.env.${TEST_ENV}`), override: true });
+loadDotenv({ path: path.resolve(process.cwd(), '.env'), quiet: true });
+loadDotenv({ path: path.resolve(process.cwd(), `.env.${TEST_ENV}`), override: true, quiet: true });
 
 const EnvSchema = z.object({
   TEST_ENV: z.enum(APP_ENVS).default('local'),
