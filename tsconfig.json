@@ -15,6 +15,9 @@
     "allowImportingTsExtensions": false,
     "declaration": false,
     "noEmit": true,
+    // TypeScript 6.0 deprecates `baseUrl` in favor of relative imports. We keep
+    // `baseUrl` + `paths` to support the `@/*` alias used throughout the framework.
+    // Remove this line once we migrate path resolution to a different mechanism.
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {

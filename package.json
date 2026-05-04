@@ -16,7 +16,7 @@
     "test:debug": "playwright test --debug",
     "test:headed": "playwright test --headed",
     "report": "playwright show-report",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,json,md,yml}\"",
     "typecheck": "tsc --noEmit"
   },
