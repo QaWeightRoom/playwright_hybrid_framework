@@ -1,0 +1,75 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        type: choice
+        options: [dev, staging]
+        default: dev
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      TEST_ENV: ${{ inputs.environment || 'dev' }}
+      CI: true
+      BASE_URL:               ${{ secrets.BASE_URL }}
+      API_BASE_URL:           ${{ secrets.API_BASE_URL }}
+      DB_HOST:                ${{ secrets.DB_HOST }}
+      DB_PORT:                ${{ secrets.DB_PORT }}
+      DB_NAME:                ${{ secrets.DB_NAME }}
+      DB_USER:                ${{ secrets.DB_USER }}
+      DB_PASSWORD:            ${{ secrets.DB_PASSWORD }}
+      ADMIN_USER_EMAIL:       ${{ secrets.ADMIN_USER_EMAIL }}
+      ADMIN_USER_PASSWORD:    ${{ secrets.ADMIN_USER_PASSWORD }}
+      STANDARD_USER_EMAIL:    ${{ secrets.STANDARD_USER_EMAIL }}
+      STANDARD_USER_PASSWORD: ${{ secrets.STANDARD_USER_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run tests
+        run: npx playwright test
+        # To enable sharding later:
+        #   1. Add `strategy: { matrix: { shard: [1, 2, 3, 4] } }` at job level
+        #   2. Change to: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        #   3. Suffix artifact names with -shard-${{ matrix.shard }}
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Upload traces & test-results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 14
