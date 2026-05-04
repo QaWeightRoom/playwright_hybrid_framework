@@ -1,6 +1,7 @@
 import { config as loadDotenv } from 'dotenv';
 import path from 'node:path';
 import { z } from 'zod';
+import { APP_ENVS } from '@/config/types';
 
 const TEST_ENV = (process.env.TEST_ENV ?? 'local') as string;
 
@@ -8,7 +9,7 @@ loadDotenv({ path: path.resolve(process.cwd(), '.env') });
 loadDotenv({ path: path.resolve(process.cwd(), `.env.${TEST_ENV}`), override: true });
 
 const EnvSchema = z.object({
-  TEST_ENV: z.enum(['local', 'dev', 'staging', 'prod']).default('local'),
+  TEST_ENV: z.enum(APP_ENVS).default('local'),
   BASE_URL: z.string().url(),
   API_BASE_URL: z.string().url(),
   DB_HOST: z.string().min(1),
