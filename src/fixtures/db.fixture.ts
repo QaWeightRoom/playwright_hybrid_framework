@@ -9,12 +9,12 @@ export type DbFixtures = {
 };
 
 type DbFixtureDefinition = [
-  (options: {}, use: (v: Pool) => Promise<void>) => Promise<void>,
+  (options: object, use: (v: Pool) => Promise<void>) => Promise<void>,
   { scope: 'worker' }
 ];
 
 type DbCleanupFixtureDefinition = [
-  (options: {}, use: (v: void) => Promise<void>) => Promise<void>,
+  (options: object, use: (v: void) => Promise<void>) => Promise<void>,
   { scope: 'worker'; auto: boolean }
 ];
 
