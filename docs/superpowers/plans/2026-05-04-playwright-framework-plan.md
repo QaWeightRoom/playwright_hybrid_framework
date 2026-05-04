@@ -251,32 +251,60 @@ git commit -m "chore: init typescript + playwright + dependencies"
 
 ## Task 2: ESLint + Prettier config
 
+**Note:** ESLint 9+ uses flat config (`eslint.config.js`), not the legacy `.eslintrc.cjs`. The `--ext` CLI flag is also gone — file globs go in the config.
+
 **Files:**
-- Create: `.eslintrc.cjs`
+- Create: `eslint.config.js`
 - Create: `.prettierrc`
 - Create: `.prettierignore`
+- Modify: `package.json` (lint script — remove `--ext .ts`)
 
-- [ ] **Step 1: Create `.eslintrc.cjs`**
+- [ ] **Step 1: Create `eslint.config.js` (flat config)**
 
 ```js
-module.exports = {
-  root: true,
-  parser: '@typescript-eslint/parser',
-  parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
-  plugins: ['@typescript-eslint', 'playwright'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:playwright/recommended',
-    'prettier',
-  ],
-  rules: {
-    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/no-explicit-any': 'warn',
-    'playwright/no-skipped-test': 'off',
+import js from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import playwright from 'eslint-plugin-playwright';
+import prettier from 'eslint-config-prettier';
+
+export default [
+  {
+    ignores: ['node_modules/**', 'playwright-report/**', 'test-results/**', 'dist/**', '.auth/**'],
   },
-  ignorePatterns: ['node_modules', 'playwright-report', 'test-results', 'dist'],
-};
+  js.configs.recommended,
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint,
+      playwright,
+    },
+    rules: {
+      ...tseslint.configs.recommended.rules,
+      ...playwright.configs['flat/recommended'].rules,
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'playwright/no-skipped-test': 'off',
+    },
+  },
+  prettier,
+];
+```
+
+If `@eslint/js` is not in `node_modules`, install it:
+
+```bash
+npm install --save-dev @eslint/js
+```
+
+Also fix the lint script in `package.json` — remove `--ext .ts` (no longer supported):
+
+```json
+"lint": "eslint .",
 ```
 
 - [ ] **Step 2: Create `.prettierrc`**
