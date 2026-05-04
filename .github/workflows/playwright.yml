@@ -26,17 +26,20 @@ jobs:
     env:
       TEST_ENV: ${{ inputs.environment || 'dev' }}
       CI: true
-      BASE_URL:               ${{ secrets.BASE_URL }}
-      API_BASE_URL:           ${{ secrets.API_BASE_URL }}
-      DB_HOST:                ${{ secrets.DB_HOST }}
-      DB_PORT:                ${{ secrets.DB_PORT }}
-      DB_NAME:                ${{ secrets.DB_NAME }}
-      DB_USER:                ${{ secrets.DB_USER }}
-      DB_PASSWORD:            ${{ secrets.DB_PASSWORD }}
-      ADMIN_USER_EMAIL:       ${{ secrets.ADMIN_USER_EMAIL }}
-      ADMIN_USER_PASSWORD:    ${{ secrets.ADMIN_USER_PASSWORD }}
-      STANDARD_USER_EMAIL:    ${{ secrets.STANDARD_USER_EMAIL }}
-      STANDARD_USER_PASSWORD: ${{ secrets.STANDARD_USER_PASSWORD }}
+      # Fall back to public-demo defaults so CI is green out-of-the-box.
+      # Override by setting matching repo secrets when pointing at a real app.
+      BASE_URL:               ${{ secrets.BASE_URL     || 'https://practice.expandtesting.com' }}
+      API_BASE_URL:           ${{ secrets.API_BASE_URL || 'https://jsonplaceholder.typicode.com' }}
+      # DB_* are required by the env schema but unused unless RUN_DB_TESTS=1.
+      DB_HOST:                ${{ secrets.DB_HOST     || 'localhost' }}
+      DB_PORT:                ${{ secrets.DB_PORT     || '5432' }}
+      DB_NAME:                ${{ secrets.DB_NAME     || 'testdb' }}
+      DB_USER:                ${{ secrets.DB_USER     || 'postgres' }}
+      DB_PASSWORD:            ${{ secrets.DB_PASSWORD || 'postgres' }}
+      ADMIN_USER_EMAIL:       ${{ secrets.ADMIN_USER_EMAIL       || 'practice' }}
+      ADMIN_USER_PASSWORD:    ${{ secrets.ADMIN_USER_PASSWORD    || 'SuperSecretPassword!' }}
+      STANDARD_USER_EMAIL:    ${{ secrets.STANDARD_USER_EMAIL    || 'practice' }}
+      STANDARD_USER_PASSWORD: ${{ secrets.STANDARD_USER_PASSWORD || 'SuperSecretPassword!' }}
 
     steps:
       - uses: actions/checkout@v4
