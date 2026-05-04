@@ -10,13 +10,15 @@ type TestScopedFixtures = PagesFixtures & ApiFixtures & DataFixtures;
 // Worker-scoped fixtures: shared across all tests in a worker (one pg.Pool per worker).
 type WorkerScopedFixtures = DbFixtures;
 
-export const test = base.extend<TestScopedFixtures, WorkerScopedFixtures>(
-  {
-    ...pagesFixtures,
-    ...apiFixtures,
-    ...dbFixtures,
-    ...dataFixtures,
-  } as unknown as Parameters<typeof base.extend<TestScopedFixtures, WorkerScopedFixtures>>[0],
-);
+// Explicit per-fixture assignment (rather than spread) keeps the tuple types
+// `[fn, { scope: 'worker' }]` narrow — spreading widens them to `(fn|{scope})[]`
+// and breaks the extend() signature.
+export const test = base.extend<TestScopedFixtures, WorkerScopedFixtures>({
+  loginPage: pagesFixtures.loginPage,
+  usersApi: apiFixtures.usersApi,
+  db: dbFixtures.db,
+  _dbCleanup: dbFixtures._dbCleanup,
+  seededUser: dataFixtures.seededUser,
+});
 
 export { expect } from '@playwright/test';

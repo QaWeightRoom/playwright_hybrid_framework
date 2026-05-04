@@ -8,6 +8,16 @@ export type DbFixtures = {
   _dbCleanup: void;
 };
 
+type DbFixtureDefinition = [
+  (options: {}, use: (v: Pool) => Promise<void>) => Promise<void>,
+  { scope: 'worker' }
+];
+
+type DbCleanupFixtureDefinition = [
+  (options: {}, use: (v: void) => Promise<void>) => Promise<void>,
+  { scope: 'worker'; auto: boolean }
+];
+
 export const dbFixtures = {
   db: [
     async ({}, use: (v: Pool) => Promise<void>) => {
@@ -16,7 +26,7 @@ export const dbFixtures = {
       // Pool stays open for the worker; closed by _dbCleanup on worker teardown.
     },
     { scope: 'worker' as const },
-  ],
+  ] as DbFixtureDefinition,
 
   // Worker-scoped auto fixture: closes the pool when the worker shuts down.
   _dbCleanup: [
@@ -25,5 +35,5 @@ export const dbFixtures = {
       await closePool();
     },
     { scope: 'worker' as const, auto: true },
-  ],
+  ] as DbCleanupFixtureDefinition,
 };
