@@ -12,6 +12,8 @@ cp .env.example .env
 npm test
 ```
 
+> **Heads up:** Even `npm run test:unit` requires `.env` because the unit tests import the env loader to verify it works. Run `cp .env.example .env` before any test command on a fresh clone.
+
 The first run executes against public demo targets (`practice.expandtesting.com` for E2E, `jsonplaceholder.typicode.com` for API). The DB-backed sample test is skipped unless `RUN_DB_TESTS=1`.
 
 ## Layout

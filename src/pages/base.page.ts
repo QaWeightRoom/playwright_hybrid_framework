@@ -1,12 +1,12 @@
 import type { Page, Response } from '@playwright/test';
-import { env } from '@/config/env';
 
 export abstract class BasePage {
   constructor(protected readonly page: Page) {}
 
+  // Relative paths resolve against the project's `baseURL` (set in playwright.config.ts).
+  // Pass an absolute URL to override.
   async goto(pathOrUrl = '/'): Promise<Response | null> {
-    const url = pathOrUrl.startsWith('http') ? pathOrUrl : new URL(pathOrUrl, env.BASE_URL).toString();
-    return this.page.goto(url, { waitUntil: 'domcontentloaded' });
+    return this.page.goto(pathOrUrl, { waitUntil: 'domcontentloaded' });
   }
 
   async title(): Promise<string> {

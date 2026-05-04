@@ -17,6 +17,9 @@ const EnvSchema = z.object({
   DB_NAME: z.string().min(1),
   DB_USER: z.string().min(1),
   DB_PASSWORD: z.string().min(1),
+  // *_EMAIL fields use .min(1) (not .email()) because the sample target accepts a
+  // plain username. When pointing at a real app where these must be valid emails,
+  // tighten to z.string().email().
   ADMIN_USER_EMAIL: z.string().min(1),
   ADMIN_USER_PASSWORD: z.string().min(1),
   STANDARD_USER_EMAIL: z.string().min(1),

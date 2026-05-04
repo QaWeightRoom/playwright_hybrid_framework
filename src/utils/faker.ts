@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 
+// Worker-local monotonic counter — uniqueness within a worker is enough since
+// we also embed TEST_WORKER_INDEX. Resets when the worker process restarts.
 let counter = 0;
 
 function workerSuffix(): string {
